@@ -1,4 +1,4 @@
-package Util;
+package Utils;
 
 import java.text.ParseException;
 import java.time.DayOfWeek;
@@ -6,23 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.StringUtils;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 public class Excel
@@ -42,9 +25,6 @@ public class Excel
       
       comDate = String.valueOf(updateddate) + " 2019";
     } 
-
-
-
     
     String deldateone = StringUtils.replaceEach(comDate, new String[] { "st", "nd", "rd", "th", "." }, new String[] { "", "", "", "", "" });
     
@@ -71,49 +51,32 @@ public class Excel
     
     System.out.println(dayOfWeek.minus(2L));
     
-    switch ($SWITCH_TABLE$java$time$DayOfWeek()[dayOfWeek.ordinal()]) {
-      case 5:
+    switch (dayOfWeek) {
+      case FRIDAY:
         if (currenttime.isAfter(cutofftime)) {
-          
-          NextDelDate = currentdate.plusDays(4L);
-          
-          System.out.println(NextDelDate);
-        } else {
-          
-          NextDelDate = currentdate.plusDays(3L);
-          System.out.println(NextDelDate);
-        } 
+                    NextDelDate = currentdate.plusDays(4);
+                  } else {
+                  NextDelDate = currentdate.plusDays(3);
+              } 
 
       
-      case 4:
+      case THURSDAY:
         if (currenttime.isAfter(cutofftime)) {
-          
-          NextDelDate = currentdate.plusDays(4L);
-          System.out.println(NextDelDate);
-          break;
-        } 
-        NextDelDate = currentdate.plusDays(1L);
-        System.out.println(NextDelDate);
-        break;
-    } 
+                    NextDelDate = currentdate.plusDays(4);
+                } else {
+        NextDelDate = currentdate.plusDays(1);
+          } 
+   default:
     if (currenttime.isAfter(cutofftime)) {
-      
-      NextDelDate = currentdate.plusDays(2L);
-      System.out.println(NextDelDate);
-    } else {
-      
-      NextDelDate = currentdate.plusDays(1L);
-      System.out.println(NextDelDate);
+            NextDelDate = currentdate.plusDays(2);
+         } else {
+            NextDelDate = currentdate.plusDays(1);
     } 
-
-
     
     if (NextDelDate.equals(delDate)) {
-      
-      System.out.println("Success");
+          System.out.println("Success");
     } else {
-      
-      System.out.println("Fail");
+           System.out.println("Fail");
     } 
   }
-}
+}}

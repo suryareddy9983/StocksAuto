@@ -1,58 +1,47 @@
-package Util;
+package Utils;
 
 import java.io.IOException;
-import org.apache.poi.ss.usermodel.Row;
+//import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class ExcelUtils
-{
+public class ExcelUtils{
+  
   static String Projectpath;
   static XSSFWorkbook Workbook;
   static XSSFSheet sheet;
   
   public ExcelUtils(String excelpath, String sheetname) {
-    try {
-      Workbook = new XSSFWorkbook(excelpath);
-      sheet = Workbook.getSheet(sheetname);
-    }
-    catch (IOException e) {
+ 
+      try {
+		Workbook = new XSSFWorkbook(excelpath);
+		sheet = Workbook.getSheet(sheetname);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
       
-      e.printStackTrace();
-    } 
-  }
-
-
-
   
+  }
   public static void main(String[] args) {}
-
-
 
   
   public static int getRowCount() {
-    rowcount = 0;
-    try {
-      rowcount = sheet.getPhysicalNumberOfRows();
-      System.out.println("Now of rows" + rowcount);
-    } catch (Exception exception) {}
-
-
-    
-    return rowcount;
+    int rowcount = 0;
+    rowcount = sheet.getPhysicalNumberOfRows();
+     System.out.println("Now of rows" + rowcount);
+     return rowcount;
   }
+ 
+  
   public static int getColumnCount() {
-    colcount = 0;
-    try {
-      colcount = sheet.getRow(0).getPhysicalNumberOfCells();
+      int  colcount = 0;
+         colcount = sheet.getRow(0).getPhysicalNumberOfCells();
       System.out.println("Now of columns" + colcount);
-    } catch (Exception exception) {}
-
-
-    
-    return colcount;
+      return colcount;
   }
+  
   public static String getCellDataString(int rowNum, int colNum) {
     String celldata = null;
     celldata = sheet.getRow(rowNum).getCell(colNum).getStringCellValue();
@@ -71,7 +60,7 @@ public class ExcelUtils
   
   public static int getRowNum(XSSFSheet sheet, String cellData) {
     int totalRows = sheet.getLastRowNum();
-    Row row = null;
+   // Row row = null;
     int testRowNo = 0;
     for (int rowNo = 1; rowNo <= totalRows; rowNo++) {
       
