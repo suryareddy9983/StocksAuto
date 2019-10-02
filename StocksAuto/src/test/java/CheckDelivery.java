@@ -1,16 +1,29 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.IOException;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang3.StringUtils;
 //import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.google.common.base.Function;
 
 
 
@@ -32,9 +45,25 @@ public class CheckDelivery
 	}
 
 	public static void main(String[] args) throws IOException {
+	
 		WebDriverManager.chromedriver().setup();
-		ChromeDriver chromeDriver = new ChromeDriver();
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--headless");
+		ChromeDriver driver = new ChromeDriver(options);
 		
+		///Implicit wait
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		//-----------Explicit Wait-----------------
+		//WebDriverWait wait = new WebDriverWait(driver, 10);
+		//WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.name("asdc")));
+		//-----------Fluent wait------------------------
+		/*Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(10)).pollingEvery(Duration.ofSeconds(30)).ignoring(NoSuchElementException.class);
+	    WebElement element = wait.until(new Function<WebDriver, WebElement>() {
+			     public WebElement apply(WebDriver driver) {
+			       return driver.findElement(By.id("foo"));
+			     }
+			   });*/
+				
 		String projectpath = System.getProperty("user.dir");
 		String excelPath = String.valueOf(projectpath) + "/Excel/TestData.xlsx";
 		String urls = String.valueOf(projectpath) + "/Excel/urls.xlsx";
@@ -57,12 +86,12 @@ public class CheckDelivery
 			int rownr = getRowNum(sheet1, cellData);
 			String acqlink = sheet1.getRow(rownr).getCell(1).getStringCellValue();
 			System.out.println(String.valueOf(cellData) + " " + onlineStockStatus + " " + rownr + " " + acqlink);
-			chromeDriver.get(acqlink);
+			driver.get(acqlink);
 
 			if (onlineStockStatus.equalsIgnoreCase("NDD")) {
-				chromeDriver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[3]/section[2]/div[2]/ul[1]/li[2]/div[1]/div[1]/span[1]/a[1]")).click();
+				driver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[3]/section[2]/div[2]/ul[1]/li[2]/div[1]/div[1]/span[1]/a[1]")).click();
 
-				String date = chromeDriver.findElement(By.xpath("//span[@id='delivery-date']")).getText();
+				String date = driver.findElement(By.xpath("//span[@id='delivery-date']")).getText();
 
 				String updateddate = date.substring(date.length() - 6);
 
@@ -104,22 +133,22 @@ public class CheckDelivery
 					} 
 				}
 				if (NextDelDate.equals(delDate)) {
-					System.out.println("Pass");
+					System.out.println("Device is Set to Next Day Delivery(NDD) and will be delivered on "+delDate );
 				} else {
 					System.out.println("Fail");
 				}
 			}
 			else if (onlineStockStatus.equalsIgnoreCase("LOOS")) {
-				String text = chromeDriver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[3]/section[2]/div[2]/ul[1]/li[2]/div[1]/div[1]/span[1]/em[1]")).getText();
+				String text = driver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[3]/section[2]/div[2]/ul[1]/li[2]/div[1]/div[1]/span[1]/em[1]")).getText();
 				if (text.equalsIgnoreCase("Out of stock")) {
-					System.out.println("Pass");
+					System.out.println("Device is currently Out of Stock(LOOS)");
 				} else {
 					System.out.println("Fail");
 				}
 			} else if (onlineStockStatus.equalsIgnoreCase("BACK")) {
-				chromeDriver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[3]/section[2]/div[2]/ul[1]/li[2]/div[1]/div[1]/span[1]/a[1]")).click();
-				String Date = chromeDriver.findElement(By.xpath("//span[@id='delivery-date']")).getText();
-				System.out.println("Device delibery is backed to" + Date);
+				driver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[3]/section[2]/div[2]/ul[1]/li[2]/div[1]/div[1]/span[1]/a[1]")).click();
+				String date = driver.findElement(By.xpath("//span[@id='delivery-date']")).getText();
+				System.out.println("Device will be delivered(BACK) on " + date);
 			}else {
 
 				System.out.println("No Chnage to the delivery dates on this device on online");
@@ -130,12 +159,12 @@ public class CheckDelivery
 		/////Upgrades
 
 
-		chromeDriver.get("https://www.three.co.uk/My3Account2018/My3Login");
-		chromeDriver.findElement(By.xpath("//input[@name='msisdn']")).sendKeys(new CharSequence[] { "07378601485" });
-		chromeDriver.findElement(By.xpath("//input[@name='password']")).sendKeys(new CharSequence[] { "onlinetest1" });
-		chromeDriver.findElement(By.xpath("//button[@id='my3-login-submit']")).click();
-		chromeDriver.findElement(By.xpath("//a[contains(text(),'Upgrades & offers.')]")).click();
-		chromeDriver.findElement(By.xpath("//div[contains(text(),'Phone Upgrades.')]")).click();
+		driver.get("https://www.three.co.uk/My3Account2018/My3Login");
+		driver.findElement(By.xpath("//input[@name='msisdn']")).sendKeys(new CharSequence[] { "07378601485" });
+		driver.findElement(By.xpath("//input[@name='password']")).sendKeys(new CharSequence[] { "onlinetest1" });
+		driver.findElement(By.xpath("//button[@id='my3-login-submit']")).click();
+		driver.findElement(By.xpath("//a[contains(text(),'Upgrades & offers.')]")).click();
+		driver.findElement(By.xpath("//div[contains(text(),'Phone Upgrades.')]")).click();
 		
 		for (int i = 6; i < rowcount; i++) {
 			String cellData = sheet.getRow(i).getCell(0).getStringCellValue();
@@ -143,9 +172,9 @@ public class CheckDelivery
 			int rownr = getRowNum(sheet1, cellData);
 			String upglink = sheet1.getRow(rownr).getCell(2).getStringCellValue();
 			System.out.println(String.valueOf(cellData) + upgStockStatus + rownr + upglink);
-			chromeDriver.get(upglink);
+			driver.get(upglink);
 			if (upgStockStatus.equalsIgnoreCase("NDD")) {
-				String Date = chromeDriver.findElement(By.xpath("//*[@class='bullet-icon ng-hide: outOfStock(); ng-binding' and @ng-hide='outOfStock()']")).getText();
+				String Date = driver.findElement(By.xpath("//*[@class='bullet-icon ng-hide: outOfStock(); ng-binding' and @ng-hide='outOfStock()']")).getText();
 				String updateddate = Date.substring(Date.length() - 9);
 				String comDate = null;
 				if (updateddate.startsWith(" ")) {
@@ -184,24 +213,29 @@ public class CheckDelivery
 					} 
 				}
 				if (NextDelDate.equals(delDate)) {
-					System.out.println("Success");
+					System.out.println("Device is Set to Next Day Delivery(NDD) and will be delivered on "+delDate);
 				} else {
 					System.out.println("Fail");
 				}
 			}
 			else if (upgStockStatus.equalsIgnoreCase("LOOS")) {
-				String text = chromeDriver.findElement(By.xpath("//a[@class='button span3 kermit-bg three-button']")).getText();
-			System.out.println("device is out of stock " + text);
+				String text = driver.findElement(By.xpath("//a[@class='button span3 kermit-bg three-button']")).getText();
+				if (text.equalsIgnoreCase("Find a store")) {
+					System.out.println("Device is currently Out of Stock(LOOS)");
+				} else {
+					System.out.println("Fail");
+				}
 			}
 			else if (upgStockStatus.equalsIgnoreCase("BACK")) {
-				String backdate = chromeDriver.findElement(By.xpath("//*[@class='bullet-icon ng-hide: outOfStock(); ng-binding' and @ng-hide='outOfStock()']")).getText();
-				System.out.println("Device will be delibered on" + backdate);
+				String backdate = driver.findElement(By.xpath("//*[@class='bullet-icon ng-hide: outOfStock(); ng-binding' and @ng-hide='outOfStock()']")).getText();
+				String updateddate = backdate.substring(backdate.length() - 9);
+				System.out.println("Device will be delivered(BACK) on " + updateddate);
 			}
 			else {
 				System.out.println("No Chnage to the delivery dates on this device on online");
 			} 
 		} 
-		chromeDriver.close();
-		chromeDriver.quit();
+		driver.close();
+		driver.quit();
 	}
 }
