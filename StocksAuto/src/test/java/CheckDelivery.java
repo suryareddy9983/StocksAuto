@@ -13,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,29 +31,39 @@ import com.google.common.base.Function;
 public class CheckDelivery
 {
 
-	public static int getRowNum(XSSFSheet sheet1, String cellData) {
-		int totalRows = sheet1.getLastRowNum();
+	public static int getRowNum(XSSFSheet sheet, String data) {
+		int totalRows = sheet.getLastRowNum();
 		//Row row = null;
 		int testRowNo = 0;
 		for (int rowNo = 1; rowNo <= totalRows; rowNo++) {
-			XSSFRow xSSFRow = sheet1.getRow(rowNo);
+			XSSFRow xSSFRow = sheet.getRow(rowNo);
 			testRowNo++;
-			if (xSSFRow.getCell(0).getStringCellValue().equalsIgnoreCase(cellData)) {
+			if (xSSFRow.getCell(0).getStringCellValue().equalsIgnoreCase(data)) {
 				break;
 			}
 		} 
 		return testRowNo;
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args)  {
 	
+		try {
+			stocks();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	public static void stocks() throws Exception{
+		
 		WebDriverManager.chromedriver().setup();
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--headless");
-		ChromeDriver driver = new ChromeDriver(options);
+		ChromeDriver driver = new ChromeDriver();
 		
 		///Implicit wait
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 		//-----------Explicit Wait-----------------
 		//WebDriverWait wait = new WebDriverWait(driver, 10);
 		//WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.name("asdc")));
@@ -87,10 +98,11 @@ public class CheckDelivery
 			String acqlink = sheet1.getRow(rownr).getCell(1).getStringCellValue();
 			System.out.println(String.valueOf(cellData) + " " + onlineStockStatus + " " + rownr + " " + acqlink);
 			driver.get(acqlink);
-
+/*
 			if (onlineStockStatus.equalsIgnoreCase("NDD")) {
-				driver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[3]/section[2]/div[2]/ul[1]/li[2]/div[1]/div[1]/span[1]/a[1]")).click();
-
+				
+				
+				driver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[3]/section[2]/div[2]/ul[1]/li[2]/div[1]/div[1]/span[1]/a[1]")).sendKeys(Keys.RETURN);
 				String date = driver.findElement(By.xpath("//span[@id='delivery-date']")).getText();
 
 				String updateddate = date.substring(date.length() - 6);
@@ -234,8 +246,10 @@ public class CheckDelivery
 			else {
 				System.out.println("No Chnage to the delivery dates on this device on online");
 			} 
-		} 
+		} */
 		driver.close();
 		driver.quit();
 	}
-}
+
+	
+}}
