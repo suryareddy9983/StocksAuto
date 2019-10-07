@@ -6,9 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.StringUtils;
-//import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -23,9 +22,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import com.google.common.base.Function;
-
 
 
 public class CheckDelivery
@@ -98,7 +95,7 @@ public class CheckDelivery
 			String acqlink = sheet1.getRow(rownr).getCell(1).getStringCellValue();
 			System.out.println(String.valueOf(cellData) + " " + onlineStockStatus + " " + rownr + " " + acqlink);
 			driver.get(acqlink);
-/*
+
 			if (onlineStockStatus.equalsIgnoreCase("NDD")) {
 				
 				
@@ -246,10 +243,9 @@ public class CheckDelivery
 			else {
 				System.out.println("No Chnage to the delivery dates on this device on online");
 			} 
-		} */
+		} 
 		driver.close();
 		driver.quit();
 	}
 
-	
-}}
+}

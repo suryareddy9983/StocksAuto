@@ -8,19 +8,19 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelUtils{
   
- // static String Projectpath;
-  //static XSSFWorkbook Workbook;
- // static XSSFSheet sheet;
+ static String Projectpath;
+  static XSSFWorkbook Workbook;
+static XSSFSheet sheet;
   
   public ExcelUtils(String excelpath, String sheetname) {
  
-     /* try {
+     try {
 		Workbook = new XSSFWorkbook(excelpath);
 		sheet = Workbook.getSheet(sheetname);
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
-	}*/
+	}
       
   
   }
@@ -39,16 +39,8 @@ public class ExcelUtils{
 	
 	int rowcount = sheet.getPhysicalNumberOfRows();
 	
-	for (int i = 6; i < rowcount; i++) {
-
-		String cellData = sheet.getRow(i).getCell(0).getStringCellValue();
-		//String onlineStockStatus = sheet.getRow(i).getCell(2).getStringCellValue();
-		int rownr = getRowNum(sheet1, cellData);
-		
-		System.out.println(cellData +"  " + rownr);
-	}
   }
-  /*public static int getRowCount() {
+  public static int getRowCount() {
     int rowcount = 0;
     rowcount = sheet.getPhysicalNumberOfRows();
      System.out.println("Now of rows" + rowcount);
@@ -76,29 +68,8 @@ public class ExcelUtils{
     celldata = sheet.getRow(rowNum).getCell(colNum).getNumericCellValue();
     System.out.println(celldata);
     return celldata;
-  }*/
+  }
 
   
-	public static int getRowNum(XSSFSheet sheet, String data) {
-		
-		int totalRows = sheet.getLastRowNum();
-		//Row row = null;
-		int testRowNo = 0;
-		for (int rowNo = 1; rowNo <= totalRows; rowNo++) {
-			
-			XSSFRow xSSFRow = sheet.getRow(rowNo);
-			
-			testRowNo++;
-			
-			if (xSSFRow.getCell(0).getStringCellValue().equalsIgnoreCase(data)) {
-				
-				return testRowNo;
-			
-			} else {
-				
-				return testRowNo = 800;
-			}
-		} 
-		
-	}
+	
 }
